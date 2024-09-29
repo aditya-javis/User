@@ -12,7 +12,7 @@ public class UserController {
     @Autowired
     private UserService userService;
 
-    @GetMapping
+    @GetMapping("/all")
     public List<User> getAllUsers() {
         return userService.findAll();
     }
@@ -22,9 +22,23 @@ public class UserController {
         return userService.findById(id);
     }
 
-    @PostMapping
-    public User createUser(@RequestBody User user) {
+    @PostMapping("/create")
+    public User updateUserState(@RequestBody User user) {
         return userService.save(user);
+    }
+
+    @PostMapping("/{count}")
+    public void createUser(@PathVariable Integer count) {
+        userService.createUsers(count);
+    }
+
+
+    @PostMapping("/update/{state}")
+    public void updateUserState(@PathVariable Integer state) {
+        Long a = System.currentTimeMillis();
+        userService.updateUsers(state);
+        Long b = System.currentTimeMillis();
+        System.out.println(b-a);
     }
 
     @PutMapping("/{id}")
@@ -38,5 +52,15 @@ public class UserController {
     @DeleteMapping("/{id}")
     public void deleteUser(@PathVariable Long id) {
         userService.deleteById(id);
+    }
+
+    @DeleteMapping("/delete")
+    public void deleteALl() {
+        userService.deleteAll();
+    }
+
+    @PostMapping("/test/{id}/{state}")
+    public void testOptimisticLocking(@PathVariable Long id , @PathVariable Integer state) {
+        userService.testOptimisticLocking(id, state);
     }
 }
